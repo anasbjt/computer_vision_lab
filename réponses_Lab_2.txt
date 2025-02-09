@@ -1,0 +1,40 @@
+1 What is Transpose Convolution and why do we use it Generator ?
+
+Comprendre la Convolution Transposée D’habitude, dans un réseau de neurones convolutionnel (CNN), la convolution classique réduit la taille de l’image (exemple : une image de 28×28 peut devenir 14×14 après une convolution avec un stride de 2).
+La convolution transposée fait l’inverse : elle permet d’agrandir l’image. On pourrait la comparer à une interpolation, mais avec une approche apprenante, où les filtres sont optimisés pour produire des détails pertinents.
+Pourquoi l'utiliser dans un GAN ? Dans un GAN, le générateur prend en entrée un vecteur aléatoire de petite taille (ex: un vecteur de dimension 100). Il doit transformer cette information abstraite en une image complète.
+
+Mais un vecteur 100D ne ressemble pas du tout à une image, donc on doit progressivement augmenter sa dimension spatiale pour arriver à quelque chose de réaliste. C’est là que la convolution transposée intervient :
+
+Elle agrandit progressivement l’image, en passant par plusieurs étapes jusqu’à atteindre la taille souhaitée (ex: 28×28 pour MNIST). 
+Elle génère des textures et des formes détaillées, plutôt que d'utiliser un simple upsampling statique comme une interpolation bilinéaire. 
+Elle permet un apprentissage optimisé : 
+contrairement à une simple opération de redimensionnement, ici, les filtres sont entraînés pour produire des images réalistes.
+
+J’ai compris que la convolution transposée est essentielle pour transformer un petit espace latent en une image complète et réaliste.
+Elle n’est pas juste un zoom, mais une méthode optimisée qui apprend comment générer des textures et des structures visuelles.
+Si j’avais utilisé une simple interpolation au lieu de la convolution transposée, mon générateur n’aurait pas appris à produire des images nettes, et les résultats seraient moins bons.
+
+En résumé :
+
+- Convolution classique : réduit la taille (downsampling)
+- Convolution transposée : augmente la taille (upsampling) tout en apprenant à ajouter des détails réalistes.
+
+2 What are LeakyReLU and sigmoid and why do we use them?
+
+LeakyReLU est une variante de la fonction ReLU (Rectified Linear Unit). 
+La fonction ReLU classique met à zéro toutes les valeurs négatives, ce qui peut poser un problème lorsque certaines unités deviennent inactives et cessent d’apprendre, un phénomène appelé "dying ReLU". 
+LeakyReLU introduit une petite pente pour les valeurs négatives afin d’éviter ce problème. Cela signifie que, même lorsque l’entrée est négative, une petite valeur passe toujours, ce qui permet au réseau de continuer à apprendre.
+Nous utilisons LeakyReLU principalement dans le discriminateur d’un GAN car il permet d’améliorer la propagation du gradient et d’éviter l’arrêt de l’apprentissage dû aux unités inactives. 
+Cela aide le réseau à mieux distinguer les images réelles des images générées.
+
+La fonction Sigmoid, quant à elle, est une fonction d’activation qui transforme une valeur en un résultat compris entre 0 et 1. 
+Cela est particulièrement utile pour des tâches de classification binaire où nous devons déterminer si une image est réelle ou fausse. 
+Dans un GAN, nous utilisons souvent Sigmoid dans la couche de sortie du discriminateur, car il permet d’obtenir une probabilité indiquant si l’entrée est une image réelle ou générée.
+
+En résumé :
+
+- LeakyReLU permet de préserver le flux du gradient même pour des valeurs négatives, ce qui évite le problème des unités mortes et favorise un apprentissage plus stable.
+- Sigmoid est utilisé en sortie du discriminateur pour produire une probabilité comprise entre 0 et 1, ce qui facilite la classification entre images réelles et générées.
+
+Ces deux fonctions jouent donc un rôle essentiel dans l’entraînement et la performance des GANs en permettant un meilleur apprentissage et une classification efficace.
